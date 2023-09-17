@@ -44,20 +44,31 @@ def bfs_search(search_problem):
                 q.append(SearchNode(state, current_node))
     
     return f'\n{search_problem} cannot be solved!!\n'
+
+
 # Don't forget that your dfs function should be recursive and do path checking,
-#  rather than memoizing (no visited set!) to be memory efficient
-
+# rather than memoizing (no visited set!) to be memory efficient
 # We pass the solution along to each new recursive call to dfs_search
-#  so that statistics like number of nodes visited or recursion depth
-#  might be recorded
+# so that statistics like number of nodes visited or recursion depth might be recorded
 def dfs_search(search_problem, depth_limit=100, node=None, solution=None):
-#     # if no node object given, create a new search from starting state
-#     if node == None:
-#         node = SearchNode(search_problem.start_state)
-#         solution = SearchSolution(search_problem, "DFS")
+    # if no node object given, create a new search from starting state
+    if node == None:
+        node = SearchNode(search_problem.start_state)
+        solution = SearchSolution(search_problem, "DFS")
 
-    # you write this part
-    return None
+    # base casse
+    if search_problem.goal_check(node.state) == search_problem.goal_state:
+        trace_parent(node)
+        
+    if depth_limit < 0:
+        return f'\n{search_problem} cannot be solved!!\n'
+    
+    # recursion
+    for s in search_problem.get_successors(search_problem.start_state):
+        node = SearchNode(s, node)
+        dfs_search(search_problem, depth_limit-1, node, solution)
+    
+    
 
 
 def ids_search(search_problem, depth_limit=100):
