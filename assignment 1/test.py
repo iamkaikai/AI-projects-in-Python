@@ -1,6 +1,17 @@
-x = (3,3,1)
-y = (1,0,0)
+import random
 
-r = tuple(a - b for a, b in zip(x, y))
+def test():
+    s = set()
+    total = 0
+    def recursive(n, depth=0):
+        nonlocal total
+        if n in s or total > 100 or depth > 100:
+            print(s)
+            print(total)
+            return
+        s.add(n)
+        total += n
+        recursive(random.randint(1, 10), depth+1)
+    recursive(1)
 
-print(r)
+test()

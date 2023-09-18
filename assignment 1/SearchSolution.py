@@ -4,6 +4,7 @@ class SearchSolution:
         self.search_method = search_method
         self.path = []
         self.nodes_visited = 0
+        self.sovled = False
 
     def __str__(self):
         string = "----\n"
