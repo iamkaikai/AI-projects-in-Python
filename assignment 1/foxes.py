@@ -6,7 +6,7 @@ problem331 = FoxProblem((3, 3, 1))
 problem541 = FoxProblem((5, 4, 1))
 problem551 = FoxProblem((5, 5, 1))
 problem651 = FoxProblem((6, 5, 1))
-problem10101 = FoxProblem((9, 8, 1))
+problemXL = FoxProblem((20, 18, 1))
 
 # Run the searches.
 #  Each of the search algorithms should return a SearchSolution object,
@@ -33,7 +33,7 @@ problem10101 = FoxProblem((9, 8, 1))
 # print(ids_search(problem651))
 # print(memoizing_dfs_search(problem651))
 
-print(bfs_search(problem10101))
-print(dfs_search(problem10101))
-print(ids_search(problem10101))
-print(memoizing_dfs_search(problem10101))
+print(bfs_search(problemXL))
+print(dfs_search(problemXL))
+print(ids_search(problemXL))
+print(memoizing_dfs_search(problemXL))

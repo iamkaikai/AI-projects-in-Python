@@ -112,10 +112,10 @@ def memoizing_dfs_search(search_problem, depth_limit=100, node=None, solution=No
     q.append(node)
     explored = set()
     explored.add(node.state)
+    solution.nodes_visited += 1
     
     while q:
         cur_node = q.pop()
-        solution.nodes_visited +=1
         current_state = cur_node.state
         
         if search_problem.goal_check(current_state):
@@ -129,6 +129,7 @@ def memoizing_dfs_search(search_problem, depth_limit=100, node=None, solution=No
         for s in search_problem.get_successors(current_state):
             if s not in explored:
                 explored.add(s)
+                solution.nodes_visited += 1
                 child = SearchNode(s, cur_node)
                 q.append(child)
     return solution
