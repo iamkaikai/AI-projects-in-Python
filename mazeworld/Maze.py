@@ -1,17 +1,17 @@
 from time import sleep
 
-# Maze.py
+#  Maze.py
 #  original version by db, Fall 2017
 #  Feel free to modify as desired.
 
-# Maze objects are for loading and displaying mazes, and doing collision checks.
+#  Maze objects are for loading and displaying mazes, and doing collision checks.
 #  They are not a good object to use to represent the state of a robot mazeworld search
 #  problem, since the locations of the walls are fixed and not part of the state;
 #  you should do something else to represent the state. However, each Mazeworldproblem
 #  might make use of a (single) maze object, modifying it as needed
 #  in the process of checking for legal moves.
 
-# Test code at the bottom of this file shows how to load in and display
+#  Test code at the bottom of this file shows how to load in and display
 #  a few maze data files (e.g., "maze1.maz", which you should find in
 #  this directory.)
 
@@ -138,8 +138,8 @@ if __name__ == "__main__":
     test_maze1 = Maze("maze1.maz")
     print(test_maze1)
 
-    #test_maze2 = Maze("maze2.maz")
-    #print(test_maze2)
+    test_maze2 = Maze("maze2.maz")
+    print(test_maze2)
 
     test_maze3 = Maze("maze3.maz")
     print(test_maze3)

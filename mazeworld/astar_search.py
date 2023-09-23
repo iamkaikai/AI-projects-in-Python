@@ -7,6 +7,8 @@ class AstarNode:
 
     def __init__(self, state, heuristic, parent=None, transition_cost=0):
         # you write this part
+        self.start = state
+        self.heuristic = heuristic
 
     def priority(self):
         # you write this part
