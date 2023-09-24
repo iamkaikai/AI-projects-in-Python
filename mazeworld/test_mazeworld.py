@@ -8,19 +8,21 @@ from astar_search import astar_search
 def null_heuristic(state):
     return 0
 
+
 # Test problems
 test_maze3 = Maze("maze3.maz")
-test_mp = MazeworldProblem(test_maze3, (1, 4, 1, 3, 1, 2))      #loaded maze, goals
-
+# test_mp = MazeworldProblem(test_maze3, (1, 4, 1, 3, 1, 2))      #loaded maze, goals
+test_mp = MazeworldProblem(test_maze3, (5, 6))      #loaded maze, goals
+print(test_maze3)
 # print(test_mp.get_successors(test_mp.start_state))
 
 # this should explore a lot of nodes; it's just uniform-cost search
-result = astar_search(test_mp, null_heuristic)
-print(result)
+# result = astar_search(test_mp, null_heuristic)
+# print(f'result = {result}')
 
 # this should do a bit better:
 result = astar_search(test_mp, test_mp.manhattan_heuristic)
 print(result)
-test_mp.animate_path(result.path)
+# test_mp.animate_path(result)
 
 # Your additional tests here:

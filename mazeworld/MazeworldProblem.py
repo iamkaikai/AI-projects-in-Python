@@ -29,19 +29,25 @@ class MazeworldProblem:
             print(str(self.maze))
 
     # For each pair of coordinates in 'locations', return a list of valid successor coordinates based on defined actions.
-    def get_successors(self, locations):
-        print(locations)
+    def get_successors(self, location_arr):
         result = []
-        cur_locs = [(locations[i], locations[i+1]) for i in range(0, len(locations), 2)]
-        for cur_loc in cur_locs:
-            x = cur_loc[0]
-            y = cur_loc[1]
-            print(f'local x = {x} y = {y}')
-            actions = [(1,0),(0,1),(-1,0),(0,-1)]
-            rs = [(x + action[0], y + action[1]) for action in actions]
-            print(rs)
-            r = [r for r in rs if (self.maze.is_floor(r[0], r[1]) and not self.maze.has_robot(r[0], r[1])) ]
-            result.append(r)
+        moving_agent = location_arr[-1]
+        x = location_arr[moving_agent*2]
+        y = location_arr[moving_agent*2 + 1]
+        print('-----------')
+        print(location_arr)
+        actions = [(1,0),(0,1),(-1,0),(0,-1)]
+        next_moves = [(x + action[0], y + action[1]) for action in actions]
+        for next_loc in next_moves:
+            next_loc_x = next_loc[0]
+            next_loc_y = next_loc[1]
+            if self.maze.is_floor(next_loc_x, next_loc_y) and not self.maze.has_robot(next_loc_x, next_loc_y):
+                location_arr_new = list(location_arr)
+                location_arr_new[moving_agent*2] = next_loc_x
+                location_arr_new[moving_agent*2+1] = next_loc_y
+                result.append(tuple(location_arr_new)) 
+        print(f'agent_loc_next: x = {result}')
+        print('-----------')
         return result
         
         
@@ -51,4 +57,6 @@ if __name__ == "__main__":
     test_maze3 = Maze("maze3.maz")
     test_mp = MazeworldProblem(test_maze3, (1, 4, 1, 3, 1, 2))
     print(test_maze3)
-    print(test_mp.get_successors((1, 0, 1, 1, 2, 1)))
+    print(test_mp.get_successors((1, 0, 1, 1, 2, 1, 0)))
+    print(test_mp.get_successors((1, 0, 1, 1, 2, 1, 1)))
+    print(test_mp.get_successors((1, 0, 1, 1, 2, 1, 2)))
