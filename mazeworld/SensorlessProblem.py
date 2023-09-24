@@ -4,14 +4,12 @@ from time import sleep
 class SensorlessProblem:
 
     ## You write the good stuff here:
-
+    def __init__(self, maze):
+        self.maze = maze
+        
     def __str__(self):
         string =  "Blind robot problem: "
         return string
-
-
-        # given a sequence of states (including robot turn), modify the maze and print it out.
-        #  (Be careful, this does modify the maze!)
 
     def animate_path(self, path):
         # reset the robot locations in the maze
@@ -20,13 +18,15 @@ class SensorlessProblem:
         for state in path:
             print(str(self))
             self.maze.robotloc = tuple(state)
-            sleep(1)
-
+            sleep(0.5)
             print(str(self.maze))
 
+    
 
 ## A bit of test code
 
 if __name__ == "__main__":
-    test_maze3 = Maze("maze3.maz")
+    test_maze3 = Maze("maze5.maz")
+    print(test_maze3)
     test_problem = SensorlessProblem(test_maze3)
+    print(test_problem)

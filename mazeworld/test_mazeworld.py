@@ -1,13 +1,10 @@
 from MazeworldProblem import MazeworldProblem
 from Maze import Maze
-
-# from uninformed_search import bfs_search
 from astar_search import astar_search
 
 # null heuristic, useful for testing astar search without heuristic (uniform cost search).
 def null_heuristic(state):
     return 0
-
 
 # Test problems
 test_maze3 = Maze("maze3.maz")
