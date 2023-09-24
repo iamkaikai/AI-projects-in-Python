@@ -41,20 +41,15 @@ def astar_search(search_problem, heuristic_fn):
     heappush(pqueue, start_node)
 
     visited_cost = {start_node.state: 0}
-    expanded_states = set()  # Set to keep track of expanded states
 
     while pqueue:
         cur_node = heappop(pqueue)
         cur_state = cur_node.state
 
-        if cur_state in expanded_states:
-            continue  # Skip nodes for already expanded states
-
-        expanded_states.add(cur_state)  # Mark the current state as expanded
-
         if cur_state == search_problem.goal:
             path = backchain(cur_node)
             search_problem.path = path
+            print('Solution found!!🤖🙌')
             return path
 
         for i in range(num_agent):
@@ -64,9 +59,9 @@ def astar_search(search_problem, heuristic_fn):
                 next_state = next_state[:-1]  # exclude the order at the end of tuple
                 action_cost = 1
                 new_cost = cur_node.cost + action_cost
-                if next_state not in expanded_states or new_cost < visited_cost[next_state]:
+                if next_state not in visited_cost or new_cost < visited_cost[next_state]:
                     visited_cost[next_state] = new_cost
                     new_node = AstarNode(next_state, heuristic_fn(next_state), cur_node, new_cost)
                     heappush(pqueue, new_node)
-
-    return 'no solution'
+        print('-------------------------------------------------------------------------------- end of round')
+    return 'no solution!!'

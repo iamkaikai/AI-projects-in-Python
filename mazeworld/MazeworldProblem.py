@@ -20,28 +20,43 @@ class MazeworldProblem:
     #  (Be careful, this does modify the maze!)
     def animate_path(self, path):
         # reset the robot locations in the maze
-        self.maze.robotloc = tuple(self.start_state[1:])
-        for state in path:
-            print(str(self))
-            self.maze.robotloc = tuple(state[1:])
-            sleep(1)
+        if not path == 'no solution':
+            self.maze.robotloc = tuple(self.start_state)
+            for state in path:
+                print(str(self))
+                self.maze.robotloc = tuple(state)
+                sleep(0.4)
+                print(str(self.maze))
+        else:
+            return 'No solution for animation!!'
 
-            print(str(self.maze))
+    def manhattan_heuristic(self, state):
+        total = 0
+        for i in range(0, len(state), 2):
+            total += abs(self.goal[i] - state[i]) + abs(self.goal[i+1] - state[i+1])
+        return total
+    
+    def collision_check(self, locations, x, y):
+        for i in range(0, len(locations) - 1, 2):       # Exclude the last element, which represents the moving agent's index.
+            if locations[i] == x and locations[i+1] == y:
+                return True
+        return False
 
+    
     # For each pair of coordinates in 'locations', return a list of valid successor coordinates based on defined actions.
     def get_successors(self, location_arr):
         result = []
-        moving_agent = location_arr[-1]
+        moving_agent = location_arr[-1]                 # Exclude the last element, which represents the moving agent's index.
         x = location_arr[moving_agent*2]
         y = location_arr[moving_agent*2 + 1]
         print('-----------')
         print(location_arr)
-        actions = [(1,0),(0,1),(-1,0),(0,-1)]
+        actions = [(1,0),(0,1),(-1,0),(0,-1),(0,0)]
         next_moves = [(x + action[0], y + action[1]) for action in actions]
         for next_loc in next_moves:
             next_loc_x = next_loc[0]
             next_loc_y = next_loc[1]
-            if self.maze.is_floor(next_loc_x, next_loc_y) and not self.maze.has_robot(next_loc_x, next_loc_y):
+            if self.maze.is_floor(next_loc_x, next_loc_y) and not self.collision_check(location_arr, next_loc_x, next_loc_y):
                 location_arr_new = list(location_arr)
                 location_arr_new[moving_agent*2] = next_loc_x
                 location_arr_new[moving_agent*2+1] = next_loc_y
