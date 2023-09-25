@@ -29,7 +29,6 @@ def backchain(node):
     while current:
         result.append(current.state)
         current = current.parent
-
     result.reverse()
     return result
 
@@ -39,7 +38,6 @@ def astar_search(search_problem, heuristic_fn):
     start_node = AstarNode(tuple(search_problem.start_state), heuristic_fn(search_problem.start_state))
     pqueue = []
     heappush(pqueue, start_node)
-
     visited_cost = {start_node.state: 0}
 
     while pqueue:

@@ -49,8 +49,6 @@ class MazeworldProblem:
         moving_agent = location_arr[-1]                 # Exclude the last element, which represents the moving agent's index.
         x = location_arr[moving_agent*2]
         y = location_arr[moving_agent*2 + 1]
-        print('-----------')
-        print(location_arr)
         actions = [(1,0),(0,1),(-1,0),(0,-1),(0,0)]
         next_moves = [(x + action[0], y + action[1]) for action in actions]
         for next_loc in next_moves:
@@ -61,8 +59,6 @@ class MazeworldProblem:
                 location_arr_new[moving_agent*2] = next_loc_x
                 location_arr_new[moving_agent*2+1] = next_loc_y
                 result.append(tuple(location_arr_new)) 
-        print(f'agent_loc_next: x = {result}')
-        print('-----------')
         return result
         
         
