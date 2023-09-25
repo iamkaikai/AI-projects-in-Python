@@ -30,7 +30,8 @@ def null_heuristic(state):
 # Test Sensorless
 test_maze_sensorless = Maze("maze3.maz")
 test_sp = SensorlessProblem(test_maze_sensorless)
-result = astar_search_sensorless(test_sp, test_sp.manhattan_heuristic_max)
+result = astar_search_sensorless(test_sp, test_sp.heuristic)
+# result = astar_search_sensorless(test_sp, null_heuristic)
 print(test_maze_sensorless)
 print(result)
 test_sp.animate_path(result)

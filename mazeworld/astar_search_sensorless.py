@@ -37,6 +37,7 @@ def set_to_sorted_tuple(set):
     return tuple(sorted_list)
 
 def astar_search_sensorless(search_problem, heuristic_fn):
+    solution = SearchSolution(search_problem, 'A*star')
     init_states = search_problem.init_states
     start_node = AstarNode(init_states, heuristic_fn(search_problem.init_states))
     pqueue = []
@@ -49,9 +50,9 @@ def astar_search_sensorless(search_problem, heuristic_fn):
 
         if len(cur_state) == 1:
             path = backchain(cur_node)
-            search_problem.path = path
+            solution.path = path
             print('Solution found!!🤖🙌')
-            return path
+            return solution
 
         for direction in ['N','S','E','W']:
             next_state = search_problem.get_successors(cur_state, direction)
@@ -62,5 +63,7 @@ def astar_search_sensorless(search_problem, heuristic_fn):
                 visited_cost[next_state_tuple] = new_cost
                 new_node = AstarNode(next_state, heuristic_fn(next_state), cur_node, new_cost, direction)
                 heappush(pqueue, new_node)
+                solution.cost += action_cost
+        solution.nodes_visited += 1
         print('seaching....')
-    return 'no solution!!'
+    return solution

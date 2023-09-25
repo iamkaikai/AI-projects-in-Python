@@ -7,7 +7,6 @@ class SensorlessProblem:
     def __init__(self, maze):
         self.maze = maze
         self.init_states = set()
-        # self.path = []
         map = self.maze.map
         map_w = self.maze.width
         map_h = self.maze.height
@@ -47,7 +46,7 @@ class SensorlessProblem:
                 new_states.add(state)
         return new_states
     
-    def manhattan_heuristic_max(self, states):
+    def heuristic(self, states):
         return len(states)
     
 ## A bit of test code
