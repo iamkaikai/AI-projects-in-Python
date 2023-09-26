@@ -17,6 +17,7 @@ class SensorlessProblem:
             if i == '.':
                 self.init_states.add((x,y))
             count += 1
+        print(self.maze)
         
     def __str__(self):
         string =  "Blind robot problem: "
@@ -25,13 +26,28 @@ class SensorlessProblem:
     def get_state(self):
         return self.init_states    
     
+    def set_to_tuple(self, set):
+        return tuple(item for tup in set for item in tup)            
+    
     def animate_path(self, path):
-        # reset the robot locations in the maze
-        self.maze.robotloc = tuple(self.start_state)
-        for state in path:
-            print(str(self))
-            self.maze.robotloc = tuple(state)
-            sleep(0.5)
+        self.maze.robotloc = self.set_to_tuple(self.init_states)
+        actions = {'N':(0,1), 'S':(0,-1), 'W':(-1,0), 'E':(1,0)}
+        
+        print(str(self))
+        print(str(self.maze))
+        
+        for direction in path:
+            new_location = []
+            dx, dy = actions[direction]
+            for i in range(0, len(self.maze.robotloc), 2):
+                x, y = self.maze.robotloc[i], self.maze.robotloc[i+1]
+                nx, ny = x + dx, y + dy
+                if self.maze.is_floor(nx, ny):
+                    new_location.extend([nx, ny])
+                else:
+                    new_location.extend([x, y])
+            self.maze.robotloc = tuple(new_location)
+            sleep(1)
             print(str(self.maze))
 
     def get_successors(self, states, direction):

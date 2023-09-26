@@ -91,8 +91,8 @@ class Maze:
 
 
     # function called only by __str__ that takes the map and the
-    #  robot state, and generates a list of characters in order
-    #  that they will need to be printed out in.
+    # robot state, and generates a list of characters in order
+    # that they will need to be printed out in.
     def create_render_list(self):
         #print(self.robotloc)
         renderlist = list(self.map)
