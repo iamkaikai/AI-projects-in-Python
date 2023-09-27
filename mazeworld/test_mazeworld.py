@@ -9,9 +9,9 @@ def null_heuristic(state):
     return 0
 
 # Test problems
-# test_maze3 = Maze("maze3.maz")
-# test_mp = MazeworldProblem(test_maze3, (7, 6, 7, 5, 6, 5))      #loaded maze, goals
-# print(test_maze3)
+test_maze3 = Maze("maze3.maz")
+test_mp = MazeworldProblem(test_maze3, (7, 6, 7, 5, 6, 5))      #loaded maze, goals
+print(test_maze3)
 
 # uniform-cost search
 # result = astar_search(test_mp, null_heuristic)
@@ -23,16 +23,17 @@ def null_heuristic(state):
 # print(test_maze4)
 
 # this should do a bit better:
-# result = astar_search(test_mp, test_mp.manhattan_heuristic)
-# print(result)
-# test_mp.animate_path(result)
+result = astar_search(test_mp, test_mp.manhattan_heuristic)
+print(result)
+test_mp.animate_path(result.path)
 
 # Test Sensorless
-test_maze_sensorless = Maze("maze3.maz")
-test_sp = SensorlessProblem(test_maze_sensorless)
-result = astar_search_sensorless(test_sp, test_sp.heuristic)
+# test_maze_sensorless = Maze("maze3.maz")
+# test_sp = SensorlessProblem(test_maze_sensorless)
+# result = astar_search_sensorless(test_sp, test_sp.heuristic)
+
 # result = astar_search_sensorless(test_sp, null_heuristic)
-print(test_maze_sensorless)
-print(result)
-print(type(result))
-test_sp.animate_path(result.path)
+# print(test_maze_sensorless)
+# print(result)
+# print(type(result))
+# test_sp.animate_path(result.path)

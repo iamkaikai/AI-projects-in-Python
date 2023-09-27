@@ -34,6 +34,7 @@ def backchain(node):
 
 
 def astar_search(search_problem, heuristic_fn):
+    solution = SearchSolution(search_problem, 'A* search')
     num_agent = len(search_problem.start_state) // 2
     start_node = AstarNode(tuple(search_problem.start_state), heuristic_fn(search_problem.start_state))
     pqueue = []
@@ -46,9 +47,9 @@ def astar_search(search_problem, heuristic_fn):
 
         if cur_state == search_problem.goal:
             path = backchain(cur_node)
-            search_problem.path = path
+            solution.path = path
             print('Solution found!!🤖🙌')
-            return path
+            return solution
 
         for i in range(num_agent):
             cur_state_agent = cur_state + (i,)
@@ -61,5 +62,7 @@ def astar_search(search_problem, heuristic_fn):
                     visited_cost[next_state] = new_cost
                     new_node = AstarNode(next_state, heuristic_fn(next_state), cur_node, new_cost)
                     heappush(pqueue, new_node)
+                    solution.cost +=1
+                solution.nodes_visited +=1
         print('-------------------------------------------------------------------------------- end of round')
-    return 'no solution!!'
+    return solution
