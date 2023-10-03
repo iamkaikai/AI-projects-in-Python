@@ -68,7 +68,7 @@ if __name__ == "__main__":
     
     # player1 = RandomAI()
     # player1 = MinimaxAI(3)
-    player1 = A_B_Pruning(7)
+    player1 = A_B_Pruning(4)
     player2 = RandomAI()
 
     game = ChessGame(player1, player2)
