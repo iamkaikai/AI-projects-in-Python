@@ -7,12 +7,10 @@ class ChessGame:
         self.players = [player1, player2]
 
     def make_move(self):
-
         player = self.players[1 - int(self.board.turn)]
         move = player.choose_move(self.board)
-
         self.board.push(move)  # Make the move
-
+        
     def is_game_over(self):
         return self.board.is_game_over()
 
