@@ -1,12 +1,20 @@
 import chess
 import random
-from evalute_move import evalute_move
+from evalute_move import evalute_board, evaluate_sort
 
 class A_B_Pruning():
     def __init__(self, depth):
         self.depth = depth      # max depth
         self.visited_nodes = 0
         self.transposition_table = {}
+        
+        #Zobrist hash ref: https://en.wikipedia.org/wiki/Zobrist_hashing#:~:text=Zobrist%20hashing%20(also%20referred%20to,used%20to%20avoid%20analyzing%20the
+        self.zobrist_table = {}         
+        pieces = ['P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k']
+        for piece in pieces:
+            self.zobrist_table[piece] = {}
+            for sq in range(64):
+                self.zobrist_table[piece][sq] = random.getrandbits(64)
 
     def cutoff_test(self, board, depth):
         if board.is_game_over():
@@ -18,86 +26,66 @@ class A_B_Pruning():
         if board.can_claim_fifty_moves():
             return True
         
-        if  board.is_repetition(3) or board.can_claim_threefold_repetition():
-            return True
-    
         if depth == 0:
             return True
     
-    def board_hash(self, board):
-            return hash(str(board))
+    # basic python biult-in hashing fn
+    # def board_hash(self, board):
+    #         return hash(str(board))
         
-    def evaluate_move_score(self, board, move):
-        score = 0
-        if board.is_capture(move):
-            piece_values = {'P': 1, 'N': 3, 'B': 3, 'R': 5, 'Q': 9, 'K': 1000}
-            
-            if board.piece_at(move.to_square):
-                captured_piece = board.piece_at(move.to_square).symbol().upper()
-                captured_value = piece_values.get(captured_piece)
-                capturing_piece = board.piece_at(move.from_square).symbol().upper()
-                capturing_value = piece_values.get(capturing_piece)    
-                if captured_piece and captured_value:
-                    score += captured_value*10
-                if captured_value and capturing_value:
-                    score += 10 * (captured_value - 0.5 * capturing_value)
-            
-        board.push(move)
-        score += 0.1 * board.legal_moves.count() ** 0.5
-        board.pop()
-        
-        board.push(move)
-        if board.is_checkmate():
-            score += 1000
-        elif board.is_check():
-            score += 500
-        board.pop()
-
-        return score
+    def zobrist_hash(self, board):
+        hash = 0
+        for square in chess.SQUARES:
+            piece = board.piece_at(square)
+            if piece:
+                piece = str(piece)
+                hash ^= self.zobrist_table[piece][square]
+        return hash
 
         
-    def minimax(self, board, depth, alpha, beta, maxPlayer):
+    def minimax(self, board, depth, alpha, beta, maximizing):
         self.visited_nodes +=1
-        board_key = self.board_hash(board)
+        board_key = self.zobrist_hash(board)
         
         # if seen the move before with same ev, skip search
         if board_key in self.transposition_table:
             stored_value = self.transposition_table[board_key]
             return stored_value
-        
+            
         # base case
         if self.cutoff_test(board, depth):
-            return evalute_move(board)
+            return evalute_board(board, self.transposition_table)
         
+        # sorting moving orders to improve seraching speed
         legal_moves = list(board.legal_moves)
-        sorted_moves = sorted(legal_moves, key=lambda move: self.evaluate_move_score(board, move), reverse=True)
+        sorted_moves = sorted(legal_moves, key=lambda move: evaluate_sort(board, move, self.transposition_table), reverse=True)
             
-        if maxPlayer:
-            maxEV = -float('inf')
+        if maximizing:
+            bestEval = -float('inf')
             for move in sorted_moves:
                 board.push(move)
                 eval = self.minimax(board, depth-1, alpha, beta, False)
                 board.pop()
-                maxEV = max(maxEV, eval)
+                bestEval = max(bestEval, eval)
                 alpha = max(alpha, eval)
                 if beta <= alpha:
                     break
-            self.transposition_table[board_key] = maxEV
-            return maxEV
         else:
-            minEV = float('inf')
+            bestEval = float('inf')
             for move in sorted_moves:
                 board.push(move)
                 eval = self.minimax(board, depth-1, alpha, beta, True)
                 board.pop()
-                minEV = min(minEV, eval)
+                bestEval = min(bestEval, eval)
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break
-            self.transposition_table[board_key] = minEV
-            return minEV
+                
+        self.transposition_table[board_key] = bestEval    
+        return bestEval
         
     def choose_move(self, board):
+        self.visited_nodes = 0
         best_move = None
         best_ev = -float('inf')
         alpha = -float('inf')
@@ -115,5 +103,5 @@ class A_B_Pruning():
         print("Alpha-Beta Pruning AI recommending move " + str(best_move))        
         print(f"visited nodes = {self.visited_nodes}")
         print(f'best_ev = {best_ev}')
-        print('-------------------------------')
+        print('-----------------------------------------------')
         return best_move

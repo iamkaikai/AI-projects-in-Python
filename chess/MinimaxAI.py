@@ -1,6 +1,6 @@
 import chess
 import random
-from evalute_move import evalute_move
+from evalute_move import evalute_board, evaluate_sort
 
 class MinimaxAI():
     def __init__(self, depth):
@@ -24,7 +24,7 @@ class MinimaxAI():
                 
         # base case
         if self.cutoff_test(board, depth):
-            return evalute_move(board, depth)
+            return evalute_board(board)
         
         # swith between min and max fn
         if maxPlayer:

@@ -10,5 +10,5 @@ class RandomAI():
         moves = list(board.legal_moves)
         move = random.choice(moves)
         sleep(1)   # I'm thinking so hard.
-        print("Random AI recommending move " + str(move) + '\n---------------')
+        print("Random AI recommending move " + str(move) + '\n------------------------------')
         return move
