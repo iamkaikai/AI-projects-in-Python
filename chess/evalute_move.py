@@ -1,6 +1,6 @@
 import chess
 
-def evalute_move(board, depth):
+def evalute_move(board):
         if board.is_checkmate():
             return float('inf') if board.turn else -float('inf')
         

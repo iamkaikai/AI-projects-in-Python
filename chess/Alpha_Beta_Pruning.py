@@ -23,6 +23,16 @@ class A_B_Pruning():
     def board_hash(self, board):
             return hash(str(board))
         
+    def heuristic_sort(self, board, move):
+        board.push(move)
+        value = evalute_move(board)
+        board.pop()
+        return value
+
+    def sort_move(self, board):
+        moves = list(board.legal_moves)
+        return sorted(moves, key=lambda move: -self.heuristic_sort(board, move))
+        
     def minimax(self, board, depth, alpha, beta, maxPlayer):
         self.visited_nodes +=1
         board_key = self.board_hash(board)
@@ -35,19 +45,12 @@ class A_B_Pruning():
         
         # base case
         if self.cutoff_test(board, depth):
-            return evalute_move(board, depth)
-        
-        # Null-move heuristic
-        # if depth >= 2 and not board.is_check():
-        #     board.push(chess.Move.null())
-        #     null_score = -self.minimax(board, depth - 1 - 2, -beta, -beta + 1, not maxPlayer)
-        #     board.pop()
-        #     if null_score >= beta:
-        #         return beta
+            return evalute_move(board)
         
         if maxPlayer:
             maxEV = -float('inf')
-            for move in board.legal_moves:
+            moves = self.sort_move(board)
+            for move in moves:
                 board.push(move)
                 eval = self.minimax(board, depth-1, alpha, beta, False)
                 board.pop()
@@ -59,7 +62,8 @@ class A_B_Pruning():
             return maxEV
         else:
             minEV = float('inf')
-            for move in board.legal_moves:
+            moves = self.sort_move(board)
+            for move in moves:
                 board.push(move)
                 eval = self.minimax(board, depth-1, alpha, beta, True)
                 board.pop()
