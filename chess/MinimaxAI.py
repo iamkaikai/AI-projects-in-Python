@@ -1,5 +1,6 @@
 import chess
 import random
+from evalute_move import evalute_move
 
 class MinimaxAI():
     def __init__(self, depth):
@@ -7,33 +8,23 @@ class MinimaxAI():
         self.visited_noeds = 0
 
     def cutoff_test(self, board, depth):
-        return depth == 0 or board.is_game_over()
+        if board.is_game_over():
+            return True
 
-    # I use material value for my heuristic
-    def evalute_move(self, board):
-        if board.is_checkmate():
-            return float('inf') if board.turn else -float('inf')
-        ev = 0
-        values = {
-            'P': 1, 'N': 3, 'B': 3, 'R': 5, 'Q': 9, 'K': 25,
-            'p': -1, 'n': -3, 'b': -3, 'r': -5, 'q': -9, 'k': -25
-        }
-        for square in chess.SQUARES:
-            piece = board.piece_at(square)
-            piece_value = values.get(str(piece))
-            if piece and piece_value:
-                ev += piece_value
-                
-        # return ev + random.uniform(0, 0.01)     # adding random value to avoid looping behavior, REF: https://stackoverflow.com/questions/69372792/chess-programming-minimax-detecting-repeats-transposition-tables
-        return ev
-    
+        if board.is_stalemate():
+            return True
+
+        if board.can_claim_fifty_moves():
+            return True
+        
+        return depth == 0    
     
     def minimax(self, board, depth, maxPlayer):
         self.visited_noeds +=1
                 
         # base case
         if self.cutoff_test(board, depth):
-            return self.evalute_move(board)
+            return evalute_move(board, depth)
         
         # swith between min and max fn
         if maxPlayer:

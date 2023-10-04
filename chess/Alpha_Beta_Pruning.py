@@ -1,5 +1,6 @@
 import chess
 import random
+from evalute_move import evalute_move
 
 class A_B_Pruning():
     def __init__(self, depth):
@@ -8,33 +9,20 @@ class A_B_Pruning():
         self.transposition_table = {}
 
     def cutoff_test(self, board, depth):
-        return depth == 0 or board.is_game_over()
+        if board.is_game_over():
+            return True
 
+        if board.is_stalemate():
+            return True
+
+        if board.can_claim_fifty_moves():
+            return True
+        
+        return depth == 0
+    
     def board_hash(self, board):
             return hash(str(board))
         
-    # I use material value for my heuristic
-    def evalute_move(self, board, depth):
-        pieces_value = 0
-        values = {
-            'P': 1, 'N': 3, 'B': 3, 'R': 5, 'Q': 9, 'K': 100,
-            'p': -1, 'n': -3, 'b': -3, 'r': -5, 'q': -9, 'k': -100
-        }
-        # sum up all the pieces for total ev
-        for square in chess.SQUARES:
-            piece = board.piece_at(square)
-            piece_value = values.get(str(piece))
-            if piece and piece_value:
-                pieces_value += piece_value        
-                
-        # the more possible moves the better
-        num_moves = len(list(board.legal_moves))
-        
-        # penalize going depper
-        depth_score = depth*2
-        
-        return pieces_value + num_moves + depth_score
-    
     def minimax(self, board, depth, alpha, beta, maxPlayer):
         self.visited_nodes +=1
         board_key = self.board_hash(board)
@@ -47,7 +35,15 @@ class A_B_Pruning():
         
         # base case
         if self.cutoff_test(board, depth):
-            return self.evalute_move(board, depth)
+            return evalute_move(board, depth)
+        
+        # Null-move heuristic
+        # if depth >= 2 and not board.is_check():
+        #     board.push(chess.Move.null())
+        #     null_score = -self.minimax(board, depth - 1 - 2, -beta, -beta + 1, not maxPlayer)
+        #     board.pop()
+        #     if null_score >= beta:
+        #         return beta
         
         if maxPlayer:
             maxEV = -float('inf')
@@ -73,8 +69,6 @@ class A_B_Pruning():
                     break
             self.transposition_table[board_key] = (depth, minEV)
             return minEV
-
-        
         
     def choose_move(self, board):
         best_move = None
@@ -95,8 +89,3 @@ class A_B_Pruning():
         print(f'best_ev = {best_ev}')
         print('-------------------------------')
         return best_move
-
-                
-
-        
-

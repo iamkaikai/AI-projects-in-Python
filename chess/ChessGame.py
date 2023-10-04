@@ -1,6 +1,5 @@
 import chess
 
-
 class ChessGame:
     def __init__(self, player1, player2):
         self.board = chess.Board()

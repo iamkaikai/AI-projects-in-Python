@@ -50,7 +50,7 @@ class ChessGui:
             elif result == "0-1":
                 print("⬛ Black wins!")
             elif result == "1/2-1/2":
-                print("⚠️ It's a draw!")
+                print("🟨 It's a draw!")
             self.timer.stop()  # Stop the QTimer
             return 
         print("making move, white turn " + str(self.game.board.turn))
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     
     # player1 = RandomAI()
     # player1 = MinimaxAI(3)
-    player1 = A_B_Pruning(4)
+    player1 = A_B_Pruning(5)
     player2 = RandomAI()
 
     game = ChessGame(player1, player2)
