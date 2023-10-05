@@ -10,9 +10,12 @@ from RandomAI import RandomAI
 from MinimaxAI import MinimaxAI
 from ChessGame import ChessGame
 from Alpha_Beta_Pruning import A_B_Pruning
+from Alpha_Beta_Pruning_basic import A_B_Pruning_basic
+from iterative_minimaxAI import MinimaxAI_iterative
 from HumanPlayer import HumanPlayer
 
 import random
+from time import sleep
 
 
 class ChessGui:
@@ -52,6 +55,9 @@ class ChessGui:
             elif result == "1/2-1/2":
                 print("🟨 It's a draw!")
             self.timer.stop()  # Stop the QTimer
+            print(self.game.board)
+            sleep(10)
+            sys.exit(gui.app.exec_())
             return 
         print("making move, white turn " + str(self.game.board.turn))
         self.game.make_move()
@@ -60,20 +66,26 @@ class ChessGui:
 
 if __name__ == "__main__":
 
-    random.seed(1)
+    # random.seed(1)
 
     # player_ronda = RandomAI()
     # to do: gui does not work well with HumanPlayer, due to input() use on stdin conflict
     # with event loop.
     
+    # go first
     # player1 = RandomAI()
-    # player1 = MinimaxAI(3)
+    # player1 = MinimaxAI(2)
     player1 = A_B_Pruning(3)
-    player2 = RandomAI()
-
+    # player1 = A_B_Pruning_basic(2)
+    
+    # go second
+    # player2 = RandomAI()
+    # player2 = MinimaxAI(1)
+    # player2 = A_B_Pruning(20)
+    player2 = A_B_Pruning_basic(2)
+    
+    
     game = ChessGame(player1, player2)
     gui = ChessGui(player1, player2)
-
     gui.start()
-
     sys.exit(gui.app.exec_())

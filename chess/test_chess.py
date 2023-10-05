@@ -12,7 +12,8 @@ from ChessGame import ChessGame
 import sys
 
 
-player1 = HumanPlayer()
+# player1 = HumanPlayer()
+player1 = RandomAI()
 player2 = RandomAI()
 
 game = ChessGame(player1, player2)

@@ -1,9 +1,9 @@
 import chess
 import random
 import time
-from evalute_move import evaluation
+from evalute_move_basic import evaluation
 
-class A_B_Pruning():
+class A_B_Pruning_basic():
     def __init__(self, depth):
         self.depth = depth      # max depth
         self.visited_nodes = 0
@@ -54,16 +54,16 @@ class A_B_Pruning():
         # if seen the move before with same ev, skip search
         if board_key in self.transposition_table:
             stored_value, stored_depth = self.transposition_table[board_key]
-            # if depth > stored_depth:
-            return stored_value
+            if depth > stored_depth:
+                return stored_value
             
         # base case
         if self.cutoff_test(board, depth):
-            return self.evaluator.evalute_board(board, depth, self.transposition_table, self.visited_nodes)
+            return self.evaluator.evalute_board(board)
         
         # sorting moving orders to improve seraching speed
         legal_moves = list(board.legal_moves)
-        sorted_moves = sorted(legal_moves, key=lambda move: self.evaluator.evaluate_sort(board, move, depth, self.transposition_table, self.visited_nodes), reverse=True)
+        sorted_moves = sorted(legal_moves, key=lambda move: self.evaluator.evaluate_sort(board, move), reverse=True)
             
         if maximizing:
             bestEval = -float('inf')
@@ -105,14 +105,13 @@ class A_B_Pruning():
             alpha = float('inf')
             beta = -float('inf')
             isMaximizing = False
-        
+            
         start_time = time.time()
         for move in board.legal_moves:
             board.push(move)
-            ev = self.minimax(board, self.depth, alpha, beta, True)
+            ev = self.minimax(board, self.depth, alpha, beta, isMaximizing)
             board.pop()
             
-            # make it turn dependant
             if (isMaximizing and ev > best_ev) or (not isMaximizing and ev < best_ev):
                 best_move = move
                 best_ev = ev
@@ -120,11 +119,12 @@ class A_B_Pruning():
                 alpha = max(alpha, ev)
             else:
                 beta = min(beta, ev)
-                
+
+
         end_time = time.time()
         timer = end_time - start_time
         
-        print("Alpha-Beta Pruning AI recommending move " + str(best_move))        
+        print("Alpha-Beta Pruning Basic AI recommending move " + str(best_move))        
         print(f"visited nodes = {self.visited_nodes}")
         print(f'best_ev = {best_ev}')
         print(f'Time taken for this move: {timer} seconds')
