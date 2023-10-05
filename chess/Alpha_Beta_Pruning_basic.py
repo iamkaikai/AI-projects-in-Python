@@ -9,8 +9,6 @@ class A_B_Pruning_basic():
         self.visited_nodes = 0
         self.transposition_table = {}
         self.zobrist_table = {}
-        
-        #Zobrist hash ref: https://en.wikipedia.org/wiki/Zobrist_hashing#:~:text=Zobrist%20hashing%20(also%20referred%20to,used%20to%20avoid%20analyzing%20the   
         pieces = ['P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k']
         for piece in pieces:
             self.zobrist_table[piece] = {}
@@ -35,7 +33,7 @@ class A_B_Pruning_basic():
     # basic python biult-in hashing fn
     # def board_hash(self, board):
     #         return hash(str(board))
-        
+    #Zobrist hash ref: https://en.wikipedia.org/wiki/Zobrist_hashing#:~:text=Zobrist%20hashing%20(also%20referred%20to,used%20to%20avoid%20analyzing%20the        
     def zobrist_hash(self, board):
         hash = 0
         for square in chess.SQUARES:
@@ -53,17 +51,16 @@ class A_B_Pruning_basic():
         
         # if seen the move before with same ev, skip search
         if board_key in self.transposition_table:
-            stored_value, stored_depth = self.transposition_table[board_key]
-            if depth > stored_depth:
-                return stored_value
+            stored_value = self.transposition_table[board_key]
+            return stored_value
             
         # base case
         if self.cutoff_test(board, depth):
-            return self.evaluator.evalute_board(board)
+            return self.evaluator.evalute_board(board, self.transposition_table)
         
         # sorting moving orders to improve seraching speed
         legal_moves = list(board.legal_moves)
-        sorted_moves = sorted(legal_moves, key=lambda move: self.evaluator.evaluate_sort(board, move), reverse=True)
+        sorted_moves = sorted(legal_moves, key=lambda move: self.evaluator.evaluate_sort(board, move, self.transposition_table), reverse=True)
             
         if maximizing:
             bestEval = -float('inf')
@@ -87,7 +84,7 @@ class A_B_Pruning_basic():
                     break
         
         
-        self.transposition_table[board_key] = (bestEval, depth)    
+        self.transposition_table[board_key] = bestEval    
         return bestEval
         
     def choose_move(self, board):

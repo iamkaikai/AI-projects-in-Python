@@ -4,7 +4,7 @@ import random
 class MinimaxAI():
     def __init__(self, depth):
         self.depth = depth      # max depth
-        self.visited_noeds = 0
+        self.visited_nodes = 0
 
     def cutoff_test(self, board, depth):
         if board.is_game_over():
@@ -50,7 +50,7 @@ class MinimaxAI():
         return total
     
     def minimax(self, board, depth, maxPlayer):
-        self.visited_noeds +=1
+        self.visited_nodes +=1
                 
         # base case
         if self.cutoff_test(board, depth):
@@ -77,7 +77,8 @@ class MinimaxAI():
         
     def choose_move(self, board):
         best_move = None
-        if board.turn:  # True for White, False for Black
+        # Make it turn dependant
+        if board.turn:  
             best_ev = -float('inf')
             isMaximizing = True
         else:
@@ -92,7 +93,7 @@ class MinimaxAI():
                 best_move = move
                 best_ev = ev
         print("Minimax AI recommending move " + str(best_move))        
-        print(f"visited nodes = {self.visited_noeds}")
+        print(f"visited nodes = {self.visited_nodes}")
         print('-------------------------------')
         return best_move
             

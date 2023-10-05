@@ -47,8 +47,6 @@ class MinimaxAI_iterative():
                 opponent_piece_count +=1
             
         total -= opponent_piece_count + random.random()*0.01
-        # if not board.turn:  # If it's Black's turn
-        #     total = -total
         return total
     
     def minimax(self, board, depth, maxPlayer):

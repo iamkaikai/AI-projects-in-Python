@@ -14,7 +14,11 @@ class evaluation:
                     hash ^= self.zobrist_table[piece][square]
             return hash
 
-    def evalute_board(self, board):
+    def evalute_board(self, board, transposition_table):
+        board_key = self.zobrist_hash(board)
+        if board_key in transposition_table:
+            stored_value = transposition_table[board_key]
+            return stored_value
         total = 0
         opponent_piece_count = 1
         values = {
@@ -44,10 +48,10 @@ class evaluation:
         total -= opponent_piece_count + random.random()*0.01
         return total
 
-    def evaluate_sort(self, board, move):
+    def evaluate_sort(self, board, move, transposition_table):
             score = 0
             board.push(move)
-            score += self.evalute_board(board)
+            score += self.evalute_board(board, transposition_table)
             score += 0.1 * (board.legal_moves.count() ** 0.5)
             board.pop()
             return score

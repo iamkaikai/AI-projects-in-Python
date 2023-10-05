@@ -9,8 +9,6 @@ class A_B_Pruning():
         self.visited_nodes = 0
         self.transposition_table = {}
         self.zobrist_table = {}
-        
-        #Zobrist hash ref: https://en.wikipedia.org/wiki/Zobrist_hashing#:~:text=Zobrist%20hashing%20(also%20referred%20to,used%20to%20avoid%20analyzing%20the   
         pieces = ['P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k']
         for piece in pieces:
             self.zobrist_table[piece] = {}
@@ -35,7 +33,7 @@ class A_B_Pruning():
     # basic python biult-in hashing fn
     # def board_hash(self, board):
     #         return hash(str(board))
-        
+    #Zobrist hash ref: https://en.wikipedia.org/wiki/Zobrist_hashing#:~:text=Zobrist%20hashing%20(also%20referred%20to,used%20to%20avoid%20analyzing%20the       
     def zobrist_hash(self, board):
         hash = 0
         for square in chess.SQUARES:
@@ -54,7 +52,6 @@ class A_B_Pruning():
         # if seen the move before with same ev, skip search
         if board_key in self.transposition_table:
             stored_value, stored_depth = self.transposition_table[board_key]
-            # if depth > stored_depth:
             return stored_value
             
         # base case
