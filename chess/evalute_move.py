@@ -36,7 +36,7 @@ class evaluation:
         
         board_key = self.zobrist_hash(board)
         if board_key in transposition_table:
-            stored_value, stored_depth = transposition_table[board_key]
+            stored_value = transposition_table[board_key]
             return stored_value
             
         for square in chess.SQUARES:
@@ -64,6 +64,7 @@ class evaluation:
                 total -= (distance_to_opponent_king / opponent_piece_count)*0.5
                 
         total -= opponent_piece_count + random.random()*0.01
+        # transposition_table[board_key] = total
         return total
 
     def evaluate_sort(self, board, move, depth, transposition_table, total_step):

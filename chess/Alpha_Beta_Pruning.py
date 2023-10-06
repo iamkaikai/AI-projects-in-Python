@@ -51,7 +51,7 @@ class A_B_Pruning():
         
         # if seen the move before with same ev, skip search
         if board_key in self.transposition_table:
-            stored_value, stored_depth = self.transposition_table[board_key]
+            stored_value = self.transposition_table[board_key]
             return stored_value
             
         # base case

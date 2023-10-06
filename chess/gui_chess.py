@@ -75,12 +75,12 @@ if __name__ == "__main__":
     # go first
     # player1 = RandomAI()
     # player1 = MinimaxAI(2)
-    player1 = A_B_Pruning(3)
-    # player1 = A_B_Pruning_basic(3)
+    player1 = A_B_Pruning(4)
+    # player1 = A_B_Pruning_basic(2)
     
     # go second
     # player2 = RandomAI()
-    player2 = MinimaxAI(3)
+    player2 = MinimaxAI(4)
     # player2 = A_B_Pruning(20)
     # player2 = A_B_Pruning_basic(2)
     
