@@ -15,7 +15,7 @@ class evaluation:
                     hash ^= self.zobrist_table[piece][square]
             return hash
 
-    def evalute_board(self, board, depth, transposition_table, total_step):
+    def evalute_board(self, board, transposition_table):
         total = 0
         opponent_king_square = board.king(not board.turn)
         opponent_piece_count = 1
@@ -36,8 +36,7 @@ class evaluation:
         
         board_key = self.zobrist_hash(board)
         if board_key in transposition_table:
-            stored_value = transposition_table[board_key]
-            return stored_value
+            return transposition_table[board_key]
             
         for square in chess.SQUARES:
             piece = board.piece_at(square)
@@ -76,7 +75,7 @@ class evaluation:
                 score += 1 if board.turn else -1
                 
             board.push(move)
-            score += self.evalute_board(board, depth, transposition_table, total_step)
+            score += self.evalute_board(board, transposition_table)
             score += 0.1 * (board.legal_moves.count() ** 0.5)
             board.pop()
             return score

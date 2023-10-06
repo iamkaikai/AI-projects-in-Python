@@ -56,7 +56,7 @@ class A_B_Pruning():
             
         # base case
         if self.cutoff_test(board, depth):
-            return self.evaluator.evalute_board(board, depth, self.transposition_table, self.visited_nodes)
+            return self.evaluator.evalute_board(board, self.transposition_table)
         
         # sorting moving orders to improve seraching speed
         legal_moves = list(board.legal_moves)
@@ -84,7 +84,7 @@ class A_B_Pruning():
                     break
         
         
-        self.transposition_table[board_key] = (bestEval, depth)    
+        self.transposition_table[board_key] = bestEval    
         return bestEval
         
     def choose_move(self, board):
