@@ -1,10 +1,15 @@
-from itertools import combinations, product
+from itertools import product
 from backTracking import backTracking
-from cps import ConstraintSatisfactionProblem
 
 # define problem
-# variables = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
-
+class ConstraintSatisfactionProblem:
+    def __init__(self, variables, domains, constraints):
+        self.variables = variables          # ['WA','NT','SA']
+        self.domains = domains              # {'WA': ['R', 'G', 'B']...}
+        self.constraints = constraints       # {('WA', 'NT'): [('R', 'B'), ...]}
+        self.assignment = {}                # {'WA':'R', ....}
+        
+# create graph for map problem
 class Graph:
     def __init__(self):
         self.nodes = {}
