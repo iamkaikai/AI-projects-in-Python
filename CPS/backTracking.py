@@ -1,43 +1,63 @@
-class backTracking:          
- 
-    def check_constraint(c1, c2):
-        return c1 != c2
-        
+from AC3 import AC3
+import copy
+
+class backTracking:
     def is_complete(self, assignment, csp):
         return set(assignment.keys()) == set(csp.variables)
-    
-    def get_unassigned_variables(self, assignment, scp):
-        for variable in scp.variables:
+
+    def get_unassigned_variables(self, assignment, csp):
+        for variable in csp.variables:
             if variable not in assignment:
                 return variable
         return None
-    
-    def is_consistent(self, country_state, color, assignment, csp):
-        for (v1, v2), legal_colors in csp.constraints.items():
-            if country_state in [v1, v2]:
-                the_other_state = v2 if country_state == v1 else v1
-                if the_other_state in assignment:
-                    c1, c2 = color, assignment[the_other_state]
-                    if (c1, c2) not in legal_colors and (c2, c1) not in legal_colors:
-                        return False
+
+    def is_consistent(self, component, value, assignment, csp):
+        for other_component, other_value in assignment.items():
+            key = (component, other_component)
+            if key in csp.constraints and (value, other_value) not in csp.constraints[key]:
+                return False
         return True
-    
+
+
     def back_tracking(self, assignment, csp):
-        # base case
+        
+        if self.is_complete(assignment, csp):       # base case to stop recursion
+            return assignment
+
+        variable = self.get_unassigned_variables(assignment, csp)
+        if variable is None:
+            return 'Solution not found!'
+
+        for value in csp.domains[variable]:
+            if self.is_consistent(variable, value, assignment, csp):
+                assignment[variable] = value
+                result = self.back_tracking(assignment, csp)
+                if result != 'Solution not found!':
+                    return result
+                del assignment[variable]
+
+        return 'Solution not found!'
+    
+    
+    def back_tracking_ac3(self, assignment, csp):
+        ac3 = AC3(csp)
+    
+        if not ac3.inference():
+            return 'Solution not found!'
+
         if self.is_complete(assignment, csp):
             return assignment
-        
-        # select a variable from csp
-        country_state = self.get_unassigned_variables(assignment, csp)
-        
-        # check all colors in the domain
-        for color in csp.domains[country_state]:
-            if self.is_consistent(country_state, color, assignment, csp):
-                assignment[country_state] = color
-                result = self.back_tracking(assignment, csp)
-                if result:
-                    return result 
-                else:
-                    del assignment[country_state]
-        return 'Solution not found!'
 
+        variable = self.get_unassigned_variables(assignment, csp)
+        if variable is None:
+            return 'Solution not found!'
+
+        for value in csp.domains[variable]:
+            if self.is_consistent(variable, value, assignment, csp):
+                assignment[variable] = value
+                result = self.back_tracking(assignment, csp)
+                if result != 'Solution not found!':
+                    return result
+                del assignment[variable]
+
+        return 'Solution not found!'
