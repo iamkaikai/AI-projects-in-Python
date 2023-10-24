@@ -12,8 +12,9 @@ if __name__ == "__main__":
 
     sat = SAT(sys.argv[1])
 
-    result = sat.walksat()
+    # result = sat.walkSAT()
+    result = sat.GSAT()
 
     if result:
-        sat.write_solution(sol_filename)
+        sat.write_solution(result, sol_filename)
         display_sudoku_solution(sol_filename)

@@ -150,7 +150,7 @@ if __name__ == "__main__":
     test_sudoku = Sudoku()
 
     test_sudoku.load("puzzle1.sud")
-    #print(test_sudoku)
+    # print(test_sudoku)
     # print(sudoku_literal(2, 3, 9, neg=True))
 
     # print(cell_clause(1, 1))
