@@ -79,7 +79,7 @@ class SAT:
                 best_score = max(score.values())
                 prev_best = best_score
                 best_flip = [var for var, s in score.items() if s == best_score]
-                print(f'best_score = {best_score}/{len(self.clauses)}; len of [best_flip] = {len(best_flip)}\n')
+                print(f'satisfied clauses = {best_score}/{len(self.clauses)}; len of [best_flip] = {len(best_flip)}\n')
 
                 # randomly flip a variable when choosing the best variable to avoid local minimun                
                 if random.random() < threshold:      
@@ -91,11 +91,11 @@ class SAT:
                     
                 assignment[selected_var] = not assignment[selected_var]
                 
-                # to a stuck at local minimun at 98% complete, 
-                # flip 5 random variables when the best score repeat 10 times
-                if best_score_repeat_count > 10 and best_score/len(self.clauses) > 0.95:
-                    threshold = 0.3
-                    for _ in range(5):
+                # if the search is stuck at local minimun at 99% of completion, 
+                # flip 10 random variables when the best score repeat 10 times
+                if best_score_repeat_count > 10 and best_score/len(self.clauses) > 0.99:
+                    # threshold = 0.1
+                    for _ in range(20):
                         selected_var = random.choice(list_variables)
                         assignment[selected_var] = not assignment[selected_var]
                     best_score_repeat_count = 0
@@ -135,7 +135,7 @@ class SAT:
                 best_score = max(score.values())
                 best_flip = [var for var, s in score.items() if s == best_score]
                 selected_var = random.choice(best_flip)
-                print(f'best_score = {best_score}/{len(self.clauses)}; len of [best_flip] = {len(best_flip)}\n')
+                print(f'satisfied clauses = {best_score}/{len(self.clauses)}; len of [best_flip] = {len(best_flip)}\n')
                 
             assignment[selected_var] = not assignment[selected_var]            
             count += 1
