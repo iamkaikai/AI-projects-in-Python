@@ -12,8 +12,10 @@ if __name__ == "__main__":
 
     sat = SAT(sys.argv[1])
 
+    ############################ select solver ############################
     # result = sat.walkSAT()
-    result = sat.GSAT()
+    # result = sat.GSAT()
+    result = sat.DPLL_SAT()
 
     if result:
         sat.write_solution(result, sol_filename)

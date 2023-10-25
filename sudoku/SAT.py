@@ -27,7 +27,7 @@ class SAT:
             satisfaction = False
             for literal in clause:
                 if literal > 0:
-                    if assignment[abs(literal)] is True:
+                    if assignment[literal] is True:
                         satisfaction  = True
                         break
                 else:
@@ -135,11 +135,106 @@ class SAT:
                 best_score = max(score.values())
                 best_flip = [var for var, s in score.items() if s == best_score]
                 selected_var = random.choice(best_flip)
-                print(f'satisfied clauses = {best_score}/{len(self.clauses)}; len of [best_flip] = {len(best_flip)}\n')
+                print(f'best_score = {best_score}/{len(self.clauses)}; len of [best_flip] = {len(best_flip)}\n')
                 
             assignment[selected_var] = not assignment[selected_var]            
             count += 1
             
         return None
-
     
+   
+   
+    ############################ Bonus ############################
+    # try to implement the algo bases on the pseudo code below:
+    # https://en.wikipedia.org/wiki/DPLL_algorithm
+        
+    def unit_propagate(self, l, clauses, assignment):
+        assignment[l] = True  # Assign true to the literal
+        new_clauses = []  # Initialize a new clause list
+
+        for clause in clauses:
+            if l in clause:
+                continue  
+            
+            new_clause = [x for x in clause if x != -l]  
+            if len(new_clause) == 0:
+                return None, None  
+            
+            if l in assignment and assignment[l] == False:
+                return None, None
+            
+            new_clauses.append(new_clause)  
+
+        return new_clauses, assignment  
+
+
+    def pure_literal_assign(self, l, clauses, assignment):
+        assignment[l] = True  
+        new_clauses = []  
+        
+        for clause in clauses:
+            if l not in clause and -l not in clause:
+                new_clauses.append(clause)  
+            
+            if l in assignment and assignment[l] == False:
+                return None, None
+
+        return new_clauses, assignment 
+
+
+    def DPLL(self, clauses, assignment={}, count = 0):
+        print(f'count = {count}')
+        
+        # Unit propagation
+        unit_clauses = [c for c in clauses if len(c) == 1]
+        while unit_clauses:
+            unit = unit_clauses.pop(0)
+            clauses, assignment = self.unit_propagate(unit[0], clauses, assignment)
+            if clauses is None:
+                return False, {}
+                    
+        # Pure literal elimination
+        all_literals = [lit for clause in clauses for lit in clause]
+        pure_literals = set(l for l in all_literals if -l not in all_literals)
+        for l in pure_literals:
+            clauses, assignment = self.pure_literal_assign(l, clauses, assignment)
+            if clauses is None:
+                return False, {}
+
+        # Check for stopping conditions
+        if not clauses:
+            return True, assignment
+        for clause in clauses:
+            if not clause:
+                return False, {}
+        
+        # Recursive DPLL
+        l = random.choice(all_literals)
+        
+        # Try assigning False to l
+        new_assignment = assignment.copy()
+        new_assignment[l] = False
+        new_clauses = [[x for x in clause if x != -l] for clause in clauses if l not in clause]
+        sat, new_assignment = self.DPLL(new_clauses, new_assignment, count + 1)
+        if sat:
+            return True, new_assignment
+        
+        # Restore the original clauses for the next recursive call
+        clauses = [clause[:] for clause in clauses]
+
+        # Try assigning True to l
+        new_assignment = assignment.copy()
+        new_assignment[l] = True
+        new_clauses = [[x for x in clause if x != l] for clause in clauses if -l not in clause]
+        sat, new_assignment = self.DPLL(new_clauses, new_assignment, count + 1)
+        if sat:
+            return True, new_assignment
+
+        return False, {}
+
+    def DPLL_SAT(self):
+        sat, assignment = self.DPLL(self.clauses)
+        if sat:
+            print("Satisfiable, assignment:", assignment)
+        else:
+            print("Unsatisfiable")
