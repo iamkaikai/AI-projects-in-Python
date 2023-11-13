@@ -4,11 +4,6 @@ from matplotlib.animation import FuncAnimation
 from shapely.geometry import Polygon, LineString
 from collections import deque
 
-class Node:
-    def __int__(self):
-        self.pre = None
-        self.cur = None
-        
 class Robot:
     def __init__(self, num_arms, arm_lengths, start_config, end_config):
         self.num_arms = num_arms
@@ -26,9 +21,14 @@ class Robot:
     def init_plot(self):
         self.fig, self.ax = plt.subplots()
         self.line, = self.ax.plot([], [], 'o-', lw=2)
+        self.end_line, = self.ax.plot([], [], 'ro-', lw=2, alpha = 0.3)
         self.ax.set_xlim(-sum(self.arm_lengths), sum(self.arm_lengths))
         self.ax.set_ylim(-sum(self.arm_lengths), sum(self.arm_lengths))
-       
+    
+    def plot_end_config(self):
+        x, y = self.kinematics(self.end_config)
+        self.end_line.set_data(x, y)
+
     def kinematics(self, joints_thetas):
         x = [0]
         y = [0]
@@ -48,9 +48,13 @@ class Robot:
         plt.show()
         
     def update(self, frames):
-        x, y = self.kinematics(self.joints_angles)
-        self.line.set_data(x,y)
-        return self.line,
+        if hasattr(self, 'solution_path') and frames < len(self.solution_path):
+            self.joints_angles = self.solution_path[frames]
+            x, y = self.kinematics(self.joints_angles)
+            self.line.set_data(x, y)
+            self.plot_end_config()
+        
+        return self.line, self.end_line
     
     def add_vertex(self, config):
         if config not in self.graph:
@@ -85,25 +89,45 @@ class Robot:
         return [vertex for vertex, dist in dist[:k]]
         
     def A_star(self, graph, start, end):   
-        start_node = None
-        min_dist = float('inf')
-        list = deque()
-        list.append(tuple(start))
+        unvisited_nodes = set([tuple(start)])
+        visited_nodes = set()
+        path = {}
         
-        def backTrack_path():
+        def trackPath(child, parent):
+            path[child] = parent
             
+        def reconstruct_path(cur_node):
+            solution = [cur_node]
+            while cur_node in path:
+                cur_node = path[cur_node]
+                solution.insert(0, cur_node)
+            return solution
         
-        # bfs
-        while list:
-            cur_node = list.popleft()
+        while unvisited_nodes:
+            cur_node = min(unvisited_nodes, key=lambda node: self.euclidean_distance(node, end))
             if cur_node == tuple(end):
-                return backTrack_path
-            for value in cur_node:
-                pass
+                return reconstruct_path(cur_node)
+
+            unvisited_nodes.remove(cur_node)
+            visited_nodes.add(cur_node)
             
+            for neighbor in graph[cur_node]:
+                if neighbor in visited_nodes:
+                    continue
+                if neighbor not in unvisited_nodes:
+                    unvisited_nodes.add(neighbor)                
+                trackPath(neighbor, cur_node)
+                
+        return None
+    
     def path_finding(self, start, end):
         path = self.A_star(self.graph, start, end)
-        return path
+        if path:
+            self.solution_path = path
+            return path
+        else:
+            print("No solution found!!")
+            return None
     
     def sampling_config(self, sample_size = 1000):
         min_theta = -np.pi*2
@@ -126,8 +150,12 @@ class Robot:
         
         
     def animation(self):
-        self.animation = FuncAnimation(self.fig, self.update, frames = np.arange(0, 2 * np.pi, 0.01), blit=True, interval=50)            
-        plt.show()
+        if hasattr(self, 'solution_path'):
+            num_frames = len(self.solution_path)
+            self.anim = FuncAnimation(self.fig, self.update, frames=num_frames, blit=True, interval=200)
+            plt.show()
+        else:
+            print("No solution path to animate.")
         
     def add_obstacle(self, coordinates):
         self.obstacles.append(Polygon(coordinates))
@@ -149,6 +177,11 @@ if __name__ == '__main__':
     robot_3R = Robot(num_arm, arm_length, start_config, end_config)
     robot_3R.add_obstacle([(2,-1), (3,1), (3,-2), (1,-3), (0,-1.5)])
     robot_3R.add_obstacle([(1,1), (1,3), (-1,3), (-1,0), (1,1)])
+    robot_3R.add_obstacle([(-1.5,2), (-1.5,-2), (-3,-3), (-3,2), (-1.5,2)])
+
+    robot_3R.sampling_config(25000)
+    robot_3R.query_path()
+    
     robot_3R.render_obstacles()
     robot_3R.animation()
     
