@@ -92,7 +92,7 @@ class Robot:
             new_line = ' '.join(new_maze.maze[idx_row])
             combined_line = original_line + ' ' * 4 + new_line
             map_display += combined_line + '\n'
-        print(f'\n{map_display}')
+        print(f'\nproblem:       Prediction:\n\n{map_display}')
 
         
     def position_to_belief_state(self, transition_model):
@@ -129,10 +129,17 @@ class Robot:
         
     
     def filter(self, reading_seq):
+        step = 0
+            
         for color in reading_seq:
             color = color.upper()
             self.predict()
             self.update(color)
+            print(f'\ndistribution in step {step}:')
+            for index, state in enumerate(self.belief_state):
+                pos = self.belief_state_to_position(index)
+                print(f'{pos} -> {str(state)}')
+            step +=1
         return self.belief_state
     
     def sensor_read(self, color_seq):
@@ -147,5 +154,6 @@ class Robot:
                 best_guest_row, best_guest_col = row, col
             print(f'({row}, {col}) = {format(belief_state[idx], ".16f")}')
         
-        print(f'\n👉 most likely position: \n({best_guest_row}, {best_guest_col}) = {max_prob}  #(row, col)')
         self.print_best_guest(best_guest_row, best_guest_col)
+        print(f'most likely position 👉 (row: {best_guest_row}, col: {best_guest_col}) = {max_prob}\n')
+        

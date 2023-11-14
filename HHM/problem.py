@@ -1,6 +1,5 @@
 from hmm import Maze, Robot
 
-
 maze = Maze()
 maze.generate_rand_maze(4, 4)
 maze.insert_wall_in_maze(4,2)
@@ -19,4 +18,3 @@ robot.generate_sensor_model()
 
 print(f'\ninput sequence = {color_seq}\n')
 robot.sensor_read(color_seq)
-
