@@ -37,6 +37,17 @@ def fully_connected_test():
     full_connected = FullyConnected.apply
     # %%% DO NOT EDIT ABOVE
 
+    X.requires_grad = True
+    W.requires_grad = True
+    B.requires_grad = True
+    
+    y = full_connected(X, W, B)
+    z = y.mean()
+    z.backward()
+    dzdx, dzdw, dzdb = X.grad, W.grad, B.grad
+
+    def numerical_grad()
+
     return is_correct, err
 
 

@@ -18,7 +18,8 @@ class FullyConnected(torch.autograd.Function):
         -----
         y (Tensor): of size (T x m), the outputs of the fully_connected operator
         """
-
+        ctx.save_for_backward(x, w, b)
+        y = torch.mm(x, w) + b
         return y
 
     @staticmethod
@@ -34,5 +35,8 @@ class FullyConnected(torch.autograd.Function):
         dzdw (Tenor): of size (n x m), the gradients with respect to w
         dzdb (Tensor): of size (m), the gradients with respect to b
         """
-
+        x, w, b = ctx.saved_tensors
+        dzdx = torch.mm(dz_dy, w.t())
+        dzdw = torch.mm(x.t(), dz_dy)
+        dzdb = dz_dy.sum(0)
         return dzdx, dzdw, dzdb
